@@ -6,10 +6,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.utopia.auth.controller.AuthController;
 import com.utopia.auth.exceptions.IncorrectPasswordException;
 import com.utopia.auth.exceptions.PasswordNotAllowedException;
 import com.utopia.auth.exceptions.TokenAlreadyIssuedException;
@@ -39,6 +42,9 @@ public class UserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+	
 
 	public User insert(User user) throws UserAlreadyExistsException {
 		Optional<User> checkIfEmailExist = userRepository.findByEmail(user.getUserEmail());
@@ -47,7 +53,6 @@ public class UserService {
 			throw new UserAlreadyExistsException("A user with this email already exists!");
 		}
 		if (checkIfPhoneExist.isPresent()) {
-			System.out.println("phone");
 			throw new UserAlreadyExistsException("A user with this phone number already exists!");
 		}
 
@@ -55,9 +60,12 @@ public class UserService {
 		return userRepository.save(user);
 	}
 	
-	public User update(Integer id, User user) throws UserNotFoundException {
-		User u = findById(id);
-		user.setUserRole(u.getUserRole());
+	public User update(Integer id, Map<String, String> userData) throws UserNotFoundException {
+		User user = findById(id);
+		user.setUserEmail(userData.get("userFirstName"));
+		user.setUserFirstName(userData.get("userLastName"));
+		user.setUserLastName(userData.get("userEmail"));
+		user.setUserPhone(userData.get("userPhone"));
 		return userRepository.save(user);
 	}
 
@@ -92,6 +100,7 @@ public class UserService {
 	}
 
 	public MailResponse sendEmail(User user, UserToken userToken) {
+		LOGGER.info("Sending recovery eamil to user. email: " + user.getUserEmail());
 		Map<String, Object> modelsMap = new HashMap<>();
 
 		String recoveryCode = userToken.getToken();
