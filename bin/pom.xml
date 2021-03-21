@@ -82,11 +82,6 @@
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>it.ozimov</groupId>
-			<artifactId>spring-boot-freemarker-email</artifactId>
-			<version>0.6.3</version>
-		</dependency>
 	</dependencies>
 
 	<build>
