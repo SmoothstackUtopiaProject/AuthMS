@@ -2,13 +2,16 @@ package com.utopia.auth.services;
 
 import com.utopia.auth.models.MailRequest;
 import com.utopia.auth.models.MailResponse;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.validation.UnexpectedTypeException;
-import org.slf4j.Logger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,12 +61,8 @@ public class EmailService {
       response.setMessage("mail send to : " + request.getTo());
       response.setStatus(Boolean.TRUE);
       LOGGER.info("Sent recovery email");
-    } catch (
-      UnexpectedTypeException
-      | MessagingException
-      | IOException
-      | TemplateException e
-    ) {
+    } 
+    catch (Exception e) {
       LOGGER.error("Error recovery email: " + e.getMessage());
       response.setMessage("Mail Sending failure : " + e.getMessage());
       response.setStatus(Boolean.FALSE);

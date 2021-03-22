@@ -182,23 +182,6 @@ public class UserService {
   private String formatPhone(String phone) {
     return phone.replaceAll("[^0-9]", "");
   }
-}
-	public User findByPhone(String phone) throws UserNotFoundException {
-		String formattedPhone = formatPhone(phone);
 
-		Optional<User> optionalUser = userRepository.findByPhone(formattedPhone);
-		if (!optionalUser.isPresent())
-			throw new UserNotFoundException("No user with phone: \"" + phone + "\" exist!");
-		return optionalUser.get();
-	}
-
-
-	private String formatGeneric(String name) {
-		return name.trim().toUpperCase();
-	}
-
-	private String formatPhone(String phone) {
-		return phone.replaceAll("[^0-9]", "");
-	}
 
 }

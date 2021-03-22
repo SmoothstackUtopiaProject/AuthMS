@@ -32,111 +32,88 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-  @Autowired
-  private JwtTokenProvider tokenProvider;
+	@Autowired
+	private JwtTokenProvider tokenProvider;
 
-  @Autowired
-  private UserService userService;
+	@Autowired
+	private UserService userService;
 
-  @Autowired
-  UserTokenService userTokenService;
+	@Autowired
+	UserTokenService userTokenService;
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(
-    AuthController.class
-  );
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
-  @PostMapping
-  public ResponseEntity<Object> insert(@RequestBody User user)
-    throws UserAlreadyExistsException {
-    LOGGER.info("POST new user");
-    user.setUserRole(Role.USER);
-    return new ResponseEntity<>(userService.insert(user), HttpStatus.CREATED);
-  }
+	@PostMapping
+	public ResponseEntity<Object> insert(@RequestBody User user) throws UserAlreadyExistsException {
+		LOGGER.info("POST new user");
+		user.setUserRole(Role.USER);
+		return new ResponseEntity<>(userService.insert(user), HttpStatus.CREATED);
+	}
 
-  @GetMapping("/{userId}")
-  public ResponseEntity<Object> findById(@PathVariable Integer userId)
-    throws UserNotFoundException {
-    LOGGER.info("GET user with ID: " + userId);
-    User user = userService.findById(userId);
-    return new ResponseEntity<>(user, HttpStatus.OK);
-  }
+	@GetMapping("/{userId}")
+	public ResponseEntity<Object> findById(@PathVariable Integer userId) throws UserNotFoundException {
+		LOGGER.info("GET user with ID: " + userId);
+		User user = userService.findById(userId);
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
 
-  @GetMapping("/login")
-  public ResponseEntity<Object> login(Principal principal)
-    throws UserNotFoundException {
-    LOGGER.info("Login user");
-    if (principal == null) {
-      return ResponseEntity.ok(principal);
-    }
-    UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) principal;
-    User user = userService.findByEmail(authenticationToken.getName());
-    user.setUserToken(tokenProvider.generateToken(authenticationToken));
+	@GetMapping("/login")
+	public ResponseEntity<Object> login(Principal principal) throws UserNotFoundException {
+		LOGGER.info("Login user");
+		if (principal == null) {
+			return ResponseEntity.ok(principal);
+		}
+		UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) principal;
+		User user = userService.findByEmail(authenticationToken.getName());
+		user.setUserToken(tokenProvider.generateToken(authenticationToken));
 
-    return new ResponseEntity<>(user, HttpStatus.OK);
-  }
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
 
-  @PostMapping("/forgot-password")
-  public ResponseEntity<Object> forgotPassword(
-    @RequestBody Map<String, String> uMap
-  )
-    throws UserNotFoundException, TokenAlreadyIssuedException {
-    LOGGER.info("Login user");
-    String email = uMap.get("userEmail");
-    userService.sendRecoveryEmail(email);
-    return new ResponseEntity<>(null, HttpStatus.OK);
-  }
+	@PostMapping("/forgot-password")
+	public ResponseEntity<Object> forgotPassword(@RequestBody Map<String, String> uMap)
+			throws UserNotFoundException, TokenAlreadyIssuedException {
+		LOGGER.info("Login user");
+		String email = uMap.get("userEmail");
+		userService.sendRecoveryEmail(email);
+		return new ResponseEntity<>(null, HttpStatus.OK);
+	}
 
-  @PostMapping("/forgot-password/verify-token")
-  public ResponseEntity<Object> verifyToken(
-    @RequestBody Map<String, String> uMap
-  )
-    throws ExpiredTokenExpception, TokenNotFoundExpection {
-    LOGGER.info("Verify token");
-    String recoveryCode = uMap.get("recoveryCode");
-    userTokenService.verifyToken(recoveryCode);
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
+	@PostMapping("/forgot-password/verify-token")
+	public ResponseEntity<Object> verifyToken(@RequestBody Map<String, String> uMap)
+			throws ExpiredTokenExpception, TokenNotFoundExpection {
+		LOGGER.info("Verify token");
+		String recoveryCode = uMap.get("recoveryCode");
+		userTokenService.verifyToken(recoveryCode);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 
-  @PostMapping("/forgot-password/recover")
-  public ResponseEntity<Object> passwordRecovery(
-    @RequestBody Map<String, String> uMap
-  )
-    throws UserNotFoundException, PasswordNotAllowedException, ExpiredTokenExpception, TokenNotFoundExpection {
-    LOGGER.info("Change password request");
-    String recoveryCode = uMap.get("recoveryCode");
-    String password = uMap.get("password");
-    userService.ChangePassword(
-      userTokenService.verifyToken(recoveryCode),
-      password
-    );
-    userTokenService.delete(recoveryCode);
-    return new ResponseEntity<>(
-      "Password successfully changed ",
-      HttpStatus.OK
-    );
-  }
+	@PostMapping("/forgot-password/recover")
+	public ResponseEntity<Object> passwordRecovery(@RequestBody Map<String, String> uMap)
+			throws UserNotFoundException, PasswordNotAllowedException, ExpiredTokenExpception, TokenNotFoundExpection {
+		LOGGER.info("Change password request");
+		String recoveryCode = uMap.get("recoveryCode");
+		String password = uMap.get("password");
+		userService.ChangePassword(userTokenService.verifyToken(recoveryCode), password);
+		userTokenService.delete(recoveryCode);
+		return new ResponseEntity<>("Password successfully changed ", HttpStatus.OK);
+	}
 
-  @PutMapping("{userId}")
-  public ResponseEntity<Object> update(
-    @PathVariable Integer userId,
-    @RequestBody Map<String, String> userData
-  )
-    throws UserNotFoundException {
-    LOGGER.info("Update user id: " + userId);
-    User user = userService.update(userId, userData);
-    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-      user.getUserEmail(),
-      user.getUserPassword()
-    );
-    user.setUserToken(tokenProvider.generateToken(authenticationToken));
-    return new ResponseEntity<>(user, HttpStatus.OK);
-  }
+	@PutMapping("{userId}")
+	public ResponseEntity<Object> update(@PathVariable Integer userId, @RequestBody Map<String, String> userData)
+			throws UserNotFoundException {
+		LOGGER.info("Update user id: " + userId);
+		User user = userService.update(userId, userData);
+		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+				user.getUserEmail(), user.getUserPassword());
+		user.setUserToken(tokenProvider.generateToken(authenticationToken));
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
 
-  @DeleteMapping("{userId}")
-  public ResponseEntity<Object> delete(@PathVariable Integer userId)
-    throws UserNotFoundException {
-    LOGGER.info("DELETE user id " + userId);
-    userService.delete(userId);
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
+	@DeleteMapping("{userId}")
+	public ResponseEntity<Object> delete(@PathVariable Integer userId) throws UserNotFoundException {
+		LOGGER.info("DELETE user id " + userId);
+		userService.delete(userId);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 }
