@@ -13,14 +13,12 @@ import com.utopia.auth.services.UserService;
 import com.utopia.auth.services.UserTokenService;
 import java.security.Principal;
 import java.util.Map;
-import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,7 +53,7 @@ public class AuthController {
     return new ResponseEntity<>(userService.insert(user), HttpStatus.CREATED);
   }
 
-  @GetMapping("{userID}")
+  @GetMapping("/{userID}")
   public ResponseEntity<Object> findById(@PathVariable Integer userId)
     throws UserNotFoundException {
     User user = userService.findById(userId);
