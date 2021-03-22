@@ -53,9 +53,10 @@ public class AuthController {
     return new ResponseEntity<>(userService.insert(user), HttpStatus.CREATED);
   }
 
-  @GetMapping("/{userID}")
+  @GetMapping("/{userId}")
   public ResponseEntity<Object> findById(@PathVariable Integer userId)
     throws UserNotFoundException {
+    LOGGER.info("GET user with ID: " + userId);
     User user = userService.findById(userId);
     return new ResponseEntity<>(user, HttpStatus.OK);
   }
