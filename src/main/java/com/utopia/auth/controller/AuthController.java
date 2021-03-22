@@ -80,7 +80,7 @@ public class AuthController {
     @RequestBody Map<String, String> uMap
   )
     throws UserNotFoundException, TokenAlreadyIssuedException {
-    LOGGER.info("Login user");
+    LOGGER.info("User's requesting password recovery");
     String email = uMap.get("userEmail");
     userService.sendRecoveryEmail(email);
     return new ResponseEntity<>(null, HttpStatus.OK);
