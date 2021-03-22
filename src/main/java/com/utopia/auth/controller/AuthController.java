@@ -55,6 +55,13 @@ public class AuthController {
     return new ResponseEntity<>(userService.insert(user), HttpStatus.CREATED);
   }
 
+  @GetMapping("{userID}")
+  public ResponseEntity<Object> findById(@PathVariable Integer userId)
+    throws UserNotFoundException {
+    User user = userService.findById(userId);
+    return new ResponseEntity<>(user, HttpStatus.OK);
+  }
+
   @GetMapping("/login")
   public ResponseEntity<Object> login(Principal principal)
     throws UserNotFoundException {
