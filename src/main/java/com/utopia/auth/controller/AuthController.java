@@ -49,7 +49,7 @@ public class AuthController {
   );
 
   @PostMapping
-  public ResponseEntity<Object> insert(@Valid @RequestBody User user)
+  public ResponseEntity<Object> insert(@RequestBody User user)
     throws UserAlreadyExistsException {
     LOGGER.info("POST new user");
     user.setUserRole(Role.USER);
