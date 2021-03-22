@@ -70,9 +70,9 @@ public class UserService {
   public User update(Integer id, Map<String, String> userData)
     throws UserNotFoundException {
     User user = findById(id);
-    user.setUserEmail(userData.get("userFirstName"));
-    user.setUserFirstName(userData.get("userLastName"));
-    user.setUserLastName(userData.get("userEmail"));
+    user.setUserEmail(userData.get("userEmail"));
+    user.setUserFirstName(userData.get("userFirstName"));
+    user.setUserLastName(userData.get("userLastName"));
     user.setUserPhone(userData.get("userPhone"));
     return userRepository.save(user);
   }
@@ -102,9 +102,8 @@ public class UserService {
     // email to user.
     UserToken userToken = new UserToken(user);
 
-
     userTokenRepository.save(userToken);
-	LOGGER.info("Atempt to send a recovery email...");
+    LOGGER.info("Atempt to send a recovery email...");
     return sendEmail(user, userToken);
   }
 
@@ -133,7 +132,7 @@ public class UserService {
     modelsMap.put("confirmation", recoveryCode);
 
     MailRequest mailRequest = new MailRequest(user.getUserEmail());
-	LOGGER.info("Atempt to send a recovery email...");
+    LOGGER.info("Atempt to send a recovery email...");
     return emailService.sendEmail(mailRequest, modelsMap);
   }
 
@@ -182,6 +181,4 @@ public class UserService {
   private String formatPhone(String phone) {
     return phone.replaceAll("[^0-9]", "");
   }
-
-
 }
