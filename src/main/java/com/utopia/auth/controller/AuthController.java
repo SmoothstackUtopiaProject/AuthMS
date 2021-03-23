@@ -116,4 +116,5 @@ public class AuthController {
 		userService.delete(userId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+
 }

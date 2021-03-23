@@ -1,11 +1,11 @@
 package com.utopia.auth.models;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 public class User {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Integer userId;
 
@@ -48,9 +48,12 @@ public class User {
 	@Transient
 	private String userToken;
 
-	public User() {}
-	public User(Role userRole, String userFirstName, String userLastName, String userEmail, String userPassword, String userPhone) {
+	public User() {
+	}
 
+	public User(Integer userId, Role userRole, String userFirstName, String userLastName, String userEmail,
+			String userPassword, String userPhone) {
+		this.userId = userId;
 		this.userRole = userRole;
 		this.userFirstName = userFirstName;
 		this.userLastName = userLastName;
@@ -59,9 +62,9 @@ public class User {
 		this.userPhone = userPhone;
 	}
 
-	public User(Role userRole, String userFirstName, String userLastName, String userEmail, String userPassword, String userPhone,
-			String userToken) {
-
+	public User(Integer userId, Role userRole, String userFirstName, String userLastName, String userEmail,
+			String userPassword, String userPhone, String userToken) {
+		this.userId = userId;
 		this.userFirstName = userFirstName;
 		this.userLastName = userLastName;
 		this.userEmail = userEmail;
@@ -126,7 +129,6 @@ public class User {
 	public void setUserRole(Role userRole) {
 		this.userRole = userRole;
 	}
-
 
 	public String getUserToken() {
 		return this.userToken;
