@@ -59,9 +59,9 @@ public class User {
 		this.userPhone = userPhone;
 	}
 
-	public User(Role userRole, String userFirstName, String userLastName, String userEmail, String userPassword, String userPhone,
+	public User(Integer userId, Role userRole, String userFirstName, String userLastName, String userEmail, String userPassword, String userPhone,
 			String userToken) {
-
+		this.userId = userId;
 		this.userFirstName = userFirstName;
 		this.userLastName = userLastName;
 		this.userEmail = userEmail;
