@@ -95,7 +95,7 @@ public class UserService {
     User user = findById(userToken.getUser().getUserId());
     if (user.getUserPassword().equals(password))
       throw new PasswordNotAllowedException("Previously used password not allowed");
-    user.setUserPassword(password);
+    user.setUserPassword(passwordEncoder.encode(password));
     userRepository.save(user);
   }
 
