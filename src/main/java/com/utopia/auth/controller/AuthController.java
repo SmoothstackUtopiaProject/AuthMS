@@ -58,10 +58,10 @@ public class AuthController {
 	}
 
 	@GetMapping("/login")
-	public ResponseEntity<Object> login(Principal principal) throws UserNotFoundException {
+	public ResponseEntity<User> login(Principal principal) throws UserNotFoundException {
 		LOGGER.info("Login user");
 		if (principal == null) {
-			return ResponseEntity.ok(principal);
+			return ResponseEntity.ok(null);
 		}
 		UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) principal;
 		User user = userService.findByEmail(authenticationToken.getName());

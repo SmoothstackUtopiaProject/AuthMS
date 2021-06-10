@@ -2,10 +2,8 @@ package com.utopia.auth.services;
 
 import com.utopia.auth.models.MailRequest;
 import com.utopia.auth.models.MailResponse;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -61,8 +59,7 @@ public class EmailService {
       response.setMessage("mail send to : " + request.getTo());
       response.setStatus(Boolean.TRUE);
       LOGGER.info("Sent recovery email");
-    } 
-    catch (Exception e) {
+    } catch (Exception e) {
       LOGGER.error("Error recovery email: " + e.getMessage());
       response.setMessage("Mail Sending failure : " + e.getMessage());
       response.setStatus(Boolean.FALSE);
